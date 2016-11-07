@@ -14,7 +14,7 @@ spec recommends against using SSH:
 
 ## Installation
 
-Build and put somewhere in inside PATH (e.g. /usr/local/bin/).
+Build and put somewhere inside PATH (e.g. /usr/local/bin/).
 
 ## Configuration
 
