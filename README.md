@@ -44,6 +44,10 @@ groups is sufficient.
 The cacert file is optional. It’s still possible to use TLS without it but
 without hostname verification.
 
+It is recommended that the system user used to talk to LFS is made low
+privileged, not being able to log into your other servers and run commands
+there.
+
 ## Usage
 
 This command will be invoked via the git-lfs client. See
