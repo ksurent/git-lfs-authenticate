@@ -20,7 +20,7 @@ Build and put somewhere inside PATH (e.g. /usr/local/bin/).
 
 By default git-lfs-authenticate reads its configuration data from
 /etc/git-lfs-authenticate.conf. You can override this by providing the
-GIT_LFS_AUTHENTICATE_CONFIG environmental variable.
+GIT_LFS_AUTHENTICATE_CONFIG environment variable.
 
 This repository contains a sample config file in example.conf. Check it out.
 
