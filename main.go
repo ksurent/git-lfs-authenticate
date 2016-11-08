@@ -84,7 +84,7 @@ func main() {
 	res := &SshAuthResponse{
 		Href: u.String(),
 		Header: map[string]string{
-			"Authorization":  httpBasicAuth(cfg.Lfs.User, cfg.Lfs.Password),
+			"Authorization":  "Basic " + httpBasicAuth(cfg.Lfs.User, cfg.Lfs.Password),
 			"X-Lfs-From-Ssh": "yes",
 		},
 	}
