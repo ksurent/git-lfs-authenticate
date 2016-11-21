@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/syslog"
 	"net/url"
 	"os"
 	"os/user"
@@ -39,7 +40,7 @@ type Configuration struct {
 var errNotAuthorised = errors.New("You're not authorised for this operation")
 
 func main() {
-	_, ns, repo, err := figureOutArguments(os.Args[1:])
+	op, ns, repo, err := figureOutArguments(os.Args[1:])
 	if err != nil {
 		errOut(err.Error())
 	}
@@ -62,7 +63,14 @@ func main() {
 	if err != nil {
 		errOut(err.Error())
 	}
+
+	slg, _ := syslog.New(syslog.LOG_INFO|syslog.LOG_LOCAL0, os.Args[0])
+
 	if !ok {
+		if slg != nil {
+			slg.Write([]byte(fmt.Sprintf("user %q not authorised to %q from %s/%s", user.Username, op, ns, repo)))
+		}
+
 		errOut(errNotAuthorised.Error())
 	}
 
@@ -75,8 +83,9 @@ func main() {
 	res := &SshAuthResponse{
 		Href: u.String(),
 		Header: map[string]string{
-			"Authorization":  "Basic " + httpBasicAuth(cfg.Lfs.User, cfg.Lfs.Password),
-			"X-Lfs-From-Ssh": "yes",
+			"Authorization":      "Basic " + httpBasicAuth(cfg.Lfs.User, cfg.Lfs.Password),
+			"X-Lfs-From-Ssh":     "yes",
+			"X-Lfs-On-Behalf-Of": user.Username,
 		},
 	}
 
@@ -86,6 +95,10 @@ func main() {
 	}
 
 	os.Stdout.Write(b)
+
+	if slg != nil {
+		slg.Write([]byte(fmt.Sprintf("user %q authorised to %q from %s/%s", user.Username, op, ns, repo)))
+	}
 }
 
 func readConfig(file string) (*Configuration, error) {
