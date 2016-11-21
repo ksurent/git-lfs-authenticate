@@ -39,16 +39,7 @@ type Configuration struct {
 var errNotAuthorised = errors.New("You're not authorised for this operation")
 
 func main() {
-	if len(os.Args) < 3 {
-		errOutf("Expected at least 2 arguments, got %d", len(os.Args)-1)
-	}
-
-	if len(os.Args) > 4 {
-		// legacy API also passes OID but we don't need it here
-		errOutf("Expected no more than 3 arguments, got %d", len(os.Args)-1)
-	}
-
-	_, ns, repo, err := figureOutArguments(os.Args[1], os.Args[2])
+	_, ns, repo, err := figureOutArguments(os.Args[1:])
 	if err != nil {
 		errOut(err.Error())
 	}
@@ -134,7 +125,18 @@ func readConfig(file string) (*Configuration, error) {
 	}, nil
 }
 
-func figureOutArguments(path, operation string) (string, string, string, error) {
+func figureOutArguments(args []string) (string, string, string, error) {
+	if len(args) < 2 {
+		return "", "", "", fmt.Errorf("Expected at least 2 arguments, got %d", len(args))
+	}
+
+	if len(args) > 3 {
+		// legacy API also passes OID but we don't need it here
+		return "", "", "", fmt.Errorf("Expected no more than 3 arguments, got %d", len(args))
+	}
+
+	path, operation := args[0], args[1]
+
 	if operation != "upload" && operation != "download" {
 		err := fmt.Sprintf("Unknown LFS operation: %q, expected %q or %q", operation, "download", "upload")
 		return "", "", "", errors.New(err)
