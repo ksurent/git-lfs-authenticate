@@ -14,7 +14,7 @@ spec recommends against using SSH:
 
 ## Installation
 
-Build and put somewhere inside PATH (e.g. /usr/local/bin/).
+Build (```go build main.go ldap.go```; you may need to ```go get gopkg.in/ldap.v2``` and ```go get gopkg.in/ini.v1``` to resolve deps fist) and put somewhere inside PATH (e.g. /usr/local/bin/).
 
 ## Configuration
 
